@@ -1,0 +1,286 @@
+{
+  "application": {
+    "name": "Todo App",
+    "description": "<p>This is a sample application to demostrate the server side of an Erstwhile Framework application.</p><p>Of particular interest is this description, which is used to build the client-side model layer through introspection. If the application is not in production mode (based on the environment variable <code>ENVIRONMENT</code>) you can access the JSON version of this document via <code><a href=\"/describe\">/describe</a></code> and the HTML version via <code><a href=\"/describe?format=html\">/describe?format=html</a></code></p>",
+    "sessionKey": {
+      "type": "custom-header",
+      "header": "X-Session"
+    }
+  },
+  "authentication": {
+    "login": [
+      {
+        "name": "login",
+        "endpoint": "/authentication/login",
+        "method": "post",
+        "type": "username-password",
+        "return": {
+          "type": "json",
+          "sessionKey": "sessionKey"
+        },
+        "description": "<p>A standard username/password login. The username field can be either the user's username or email address.</p>",
+        "fields": [
+          {
+            "key": "username",
+            "type": "text",
+            "required": true
+          },
+          {
+            "key": "password",
+            "type": "password",
+            "required": true
+          }
+        ]
+      }
+    ],
+    "forgotPassword": [
+      {
+        "name": "forgotPassword",
+        "endpoint": "/authentication/forgotPassword",
+        "method": "post",
+        "description": "<p>A standard password reset email form.</p>",
+        "fields": [
+          {
+            "key": "email",
+            "type": "email",
+            "required": true
+          },
+          {
+            "key": "username",
+            "type": "slug",
+            "required": true
+          },
+          {
+            "key": "password",
+            "type": "password",
+            "required": true
+          },
+          {
+            "key": "firstName",
+            "type": "text",
+            "required": true
+          },
+          {
+            "key": "lastName",
+            "type": "text",
+            "required": true
+          }
+        ]
+      }
+    ],
+    "signup": [
+      {
+        "name": "signup",
+        "endpoint": "/authentication/signup",
+        "method": "post",
+        "description": "<p>A standard password reset email form.</p>",
+        "fields": [
+          {
+            "key": "email",
+            "type": "email",
+            "required": true
+          },
+          {
+            "key": "username",
+            "type": "slug",
+            "required": true
+          },
+          {
+            "key": "password",
+            "type": "password",
+            "required": true
+          },
+          {
+            "key": "firstName",
+            "type": "text",
+            "required": true
+          },
+          {
+            "key": "lastName",
+            "type": "text",
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  "enums": {
+    "colorCodes": [
+      {
+        "text": "Red",
+        "value": "#F00"
+      },
+      {
+        "text": "Green",
+        "value": "#0F0"
+      },
+      {
+        "text": "Blue",
+        "value": "#00F"
+      }
+    ]
+  },
+  "entities": {
+    "todo": {
+      "name": "Todos",
+      "plural": "Todos",
+      "table": "todos",
+      "description": "<p>A Todo is a dated note to do some activity.</p>",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "type": "uuid",
+          "required":false,
+          "desciption":"<p>Nullable for new todos, required otherwise.</p>"
+        },
+        "title": {
+          "name": "Title",
+          "type": "text",
+          "required": true
+        },
+        "color": {
+          "name": "Color",
+          "type": "color",
+          "enum": "colorCodes",
+          "allowNew": true,
+          "required": true
+        },
+        "fullText": {
+          "name": "Description",
+          "type": "html",
+          "required": true
+        },
+        "date": {
+          "name": "Date",
+          "type": "datetime",
+          "required": false
+        },
+        "userID": {
+          "name": "User ID",
+          "type": "reference",
+          "entity": "user",
+          "hidden": true
+        }
+      },
+      "methods": [
+        {
+          "name": "list",
+          "endpoint": "/todo/list",
+          "method": "get",
+          "return": {
+            "type": "json",
+            "format": {
+              "data": {
+                "array": true,
+                "entity": "todo"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "description": "<p>Returns a list of todos for the requesting user. The data is paginated with a default of 10 items per page.</p>",
+          "fields": [
+            {
+              "key": "page",
+              "type": "integer",
+              "required": false,
+              "default": 1
+            },
+            {
+              "key": "numPerPage",
+              "type": "integer",
+              "required": false,
+              "default": 20
+            },
+            {
+              "key": "sort",
+              "type": "string",
+              "enum": [
+                "date",
+                "title",
+                "color"
+              ],
+              "required": false,
+              "default": "date"
+            },
+            {
+              "key": "sortOrder",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "required": false,
+              "default": "asc"
+            }
+          ]
+        },
+        {
+          "name": "create",
+          "endpoint": "/todo/create",
+          "method": "post",
+          "return": {
+            "type": "json",
+            "format": {
+              "data": {
+                "entity": "todo"
+              }
+            },
+            "entity": "todo"
+          },
+          "description": "<p>Creates a todo.</p>"
+        },
+        {
+          "name": "update",
+          "endpoint": "/todo/:todoID/update",
+          "method": "post",
+          "return": {
+            "type": "json",
+            "format": {
+              "data": {
+                "entity": "todo"
+              }
+            },
+            "entity": "todo"
+          },
+          "description": "<p>Updates a todo.</p>"
+        },
+        {
+          "name": "delete",
+          "endpoint": "/todo/:todoID/delete",
+          "method": "post",
+          "return": {
+            "type": "json",
+            "format": {
+              "success": {
+                "type": "boolean"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "<p>Updates a todo.</p>"
+        },
+        {
+          "name": "get",
+          "endpoint": "/todo/:todoID",
+          "method": "get",
+          "return": {
+            "type": "json",
+            "format": {
+              "data": {
+                "entity": "todo"
+              }
+            }
+          },
+          "description": "<p>Returns a specific todo.</p>"
+        }
+      ]
+    }
+  }
+}

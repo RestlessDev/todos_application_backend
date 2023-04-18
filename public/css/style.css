@@ -1,0 +1,9 @@
+.bg-body-tertiary {
+  background-color: #eeebe0!important;
+}
+.navbar-brand img {
+  max-height: 40px;
+}
+h1, h2, h3, h4, h5, h6 {
+  color: #1d0a5b!important;
+}
