@@ -2,11 +2,12 @@
 <html>
   <head>
     <title>Erstwhile Framework - <%= desc.application?.name %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <link href="/css/style.css" rel="stylesheet" />
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
       <div class="container-fluid">
         <a class="navbar-brand" href="/describe?format=html"><img src="/images/erstwhile-logo.png" alt="Erstwhile Framework"/></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,17 +23,18 @@
                 <a class="nav-link" href="#authentication">Authentication</a>
               </li>
             <% } %>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Dropdown
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
-            </li>
+            <% if(desc.enums) { %>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Enums
+                </a>
+                <ul class="dropdown-menu">
+                  <% for(let key in desc.enums) { %>
+                    <li><a class="dropdown-item" href="#enum-<%- key %>"><%- desc.enums[key].name %></a></li>
+                  <% } %>
+                </ul>
+              </li>
+            <% } %>
           </ul>
         </div>
       </div>
@@ -40,9 +42,30 @@
     <div class="container my-5">
       <div class="row">
         <div class="col-12">
-          <a name="home"></a>
+          <a name="home" class="jump"></a>
           <h1><%= desc.application?.name %></h1>
           <%- desc.application?.description %>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-12">
+          <hr />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <a name="conventions" class="jump"></a>
+          <h2>General Conventions</h2>
+          <p>Erstwhile Framework tends to be opinionated, and as such relies on a number of conventions to help move things along.</p>
+          <h3>Standard Return Values</h3>
+          <p>When not otherwise specified in the documentation, endpoints will return the following structure. This is also the case if an error occurs.</p>
+          <pre>
+  {
+    "success": &lt;boolean&gt;, // indcates whether or not the operation was successful
+    "message": &lt;string&gt;, // optional. Indicates a message to display to the user, either positive or negative.
+    "errors": [&lt;string&gt;], // optional. In the case of errors, they may be presented as an array of strings.
+    "errorsObj": &lt;object&gt; // optional. When the errors can be mapped to form properties, this object is sent.
+  }</pre>
         </div>
       </div>
       <div class="row mb-3">
@@ -53,7 +76,7 @@
       <% if(desc.authentication) { %>
         <div class="row">
           <div class="col-12">
-            <a name="authentication"></a>
+            <a name="authentication" class="jump"></a>
             <h2>Authentication</h2>
             <% if(desc.application.sessionKey) { %>
               <p>This application requires authentication to access some of its functionality.</p>
@@ -71,6 +94,41 @@
                 %>
                 <%- include('partials/endpoint', {endpoint}) %>
               <% } %>
+            <% } %>
+            <% if(desc.authentication.signup && desc.authentication.signup.length > 0) { %>
+              <h3>Signup Endpoint<%- desc.authentication.signup.length > 1 ? 's' : '' %></h3>
+              <% for(let i = 0; i < desc.authentication.signup.length; i++) {
+                let endpoint = desc.authentication.signup[i];
+                %>
+                <%- include('partials/endpoint', {endpoint}) %>
+              <% } %>
+            <% } %>
+            <% if(desc.authentication.forgotPassword && desc.authentication.forgotPassword.length > 0) { %>
+              <h3>Forgot Password Endpoint<%- desc.authentication.forgotPassword.length > 1 ? 's' : '' %></h3>
+              <% for(let i = 0; i < desc.authentication.forgotPassword.length; i++) {
+                let endpoint = desc.authentication.forgotPassword[i];
+                %>
+                <%- include('partials/endpoint', {endpoint}) %>
+              <% } %>
+            <% } %>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-12">
+            <hr />
+          </div>
+        </div>
+      <% } %>
+      <% if(desc.enums) { %>
+        <div class="row">
+          <div class="col-12">
+            <a name="enums" class="jump"></a>
+            <h2>Enums</h2>
+            <p>Enums are named sets of options. They are often used to standardize dropdown menus.</p>
+            <% for(let enumName in desc.enums) { %>
+              <a name="enum-<%- enumName %>" class="jump"></a>
+              <h3><%- desc.enums[enumName].name %> (<%- enumName %>)</h3>
+              <% if(desc.enums[enumName].description) { %><%- desc.enums[enumName].description %><% } %>
             <% } %>
           </div>
         </div>

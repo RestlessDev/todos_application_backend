@@ -7,3 +7,22 @@
 h1, h2, h3, h4, h5, h6 {
   color: #1d0a5b!important;
 }
+pre {
+  background-color: #ededed;
+  border-left: 2px solid #d09337;
+  padding: 10px 0;
+}
+div.alert pre {
+  background-color: initial;
+  border-left: initial;
+  padding: initial;
+}
+body {
+  padding-top: 66px;
+}
+a.jump {
+  display: block;
+  position: relative;
+  top: -70px;
+  visibility: hidden;
+}

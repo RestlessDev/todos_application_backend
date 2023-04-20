@@ -2,11 +2,21 @@
   <h5><%- endpoint.method.toUpperCase() %> <%- endpoint.endpoint %></h5>
 </div>
 <% if(endpoint.description) { %><%- endpoint.description %><% } %>
+<% if(endpoint.fields.type == "json") { %>
 <p><strong>Payload</strong></p>
-  <pre>
-  {
-    <% for(let fieldIndex in endpoint.fields) {
-        let field = endpoint.fields[fieldIndex];
-      %><%- field.key %>: &lt;<%- field.type %>&gt;<%- fieldIndex < endpoint.fields.length - 1 ? ',' : '' %> // <%- field.required ? "required" : "optional" %>
-    <% } %>
-  }</pre>
+<pre>
+  <%- helpers.renderObject(endpoint.fields.payload, '  ') %></pre>
+<% } else if(endpoint.fields.type == "query") { %>
+<p><strong>Query Parameters</strong></p>
+  
+<% } %>
+<% if(endpoint.return) { %> 
+<p><strong>Returns (<%- endpoint.return.type %>)</strong></p>
+<% if(endpoint.return.type == "json") { %>
+<pre>
+  <%- helpers.renderObject(endpoint.return.payload, '  ') %></pre>
+<% } %>
+<% } else { %>
+  <p><strong>Returns (json)</strong></p>
+  <p>Standard Return Value</p>
+<% } %>

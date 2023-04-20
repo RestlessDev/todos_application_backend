@@ -16,7 +16,8 @@ app.use(express.static('public'));
 if(process.env.ENVIRONMENT != 'production') {
   app.get('/describe', (req, res) => {
     if(req.query.format && req.query.format == 'html') {
-      res.render('describe', {desc: apiDescription})
+      var helpers = require('./views/partials/helpers.js');
+      res.render('describe', {desc: apiDescription, helpers})
     } else {
       res.json(apiDescription);
     }
