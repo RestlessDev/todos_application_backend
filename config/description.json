@@ -26,19 +26,7 @@
               {
                 "key":"user",
                 "type":"object",
-                "fields": [
-                  {
-                    "key":"firstName",
-                    "type":"text"
-                  },
-                  {
-                    "key":"lastName",
-                    "type":"text"
-                  },
-                  { "key": "email",
-                    "type":"email"
-                  }
-                ]
+                "entity":"user"
               }
             ]
           }
@@ -64,27 +52,39 @@
         }
       }
     ],
-    "forgotPassword": [
-      {
-        "name": "forgotPassword",
-        "endpoint": "/authentication/forgotPassword",
-        "method": "post",
-        "description": "<p>A standard password reset email form.</p>",
-        "fields": {
-          "type": "json",
-          "payload" : {
-            "type": "object",
-            "fields": [
-              {
-                "key": "email",
-                "type": "email",
-                "required": true
-              }
-            ]
-          }
+    "forgotPassword": {
+      "name": "forgotPassword",
+      "endpoint": "/authentication/forgotPassword",
+      "method": "post",
+      "description": "<p>A standard password reset email form.</p>",
+      "fields": {
+        "type": "json",
+        "payload" : {
+          "type": "object",
+          "fields": [
+            {
+              "key": "email",
+              "type": "email",
+              "required": true
+            }
+          ]
         }
       }
-    ],
+    },
+    "currentUser": {
+      "name": "current",
+      "endpoint": "/user/current",
+      "method": "get",
+      "requiresAuthentication": true,
+      "description": "<p>This returns the user object for the currently logged in user.</p>",
+      "return": {
+        "type": "json",
+        "payload": {
+          "type":"object",
+          "entity":"user"   
+        }
+      }
+    },
     "signup": [
       {
         "name": "signup",
@@ -149,50 +149,56 @@
   },
   "entities": {
     "todo": {
-      "name": "Todos",
+      "name": "Todo",
       "plural": "Todos",
       "table": "todos",
       "description": "<p>A Todo is a dated note to do some activity.</p>",
-      "fields": {
-        "id": {
+      "fields": [
+        {
+          "key": "id",
           "name": "ID",
           "type": "uuid",
           "required":false,
-          "desciption":"<p>Nullable for new todos, required otherwise.</p>"
+          "description":"<p>Nullable for new todos, required otherwise.</p>"
         },
-        "title": {
+        {
+          "key":"title",
           "name": "Title",
           "type": "text",
           "required": true
         },
-        "color": {
+        {
+          "key":"color",
           "name": "Color",
           "type": "color",
           "enum": "colorCodes",
           "allowNew": true,
           "required": true
         },
-        "fullText": {
+        {
+          "key": "fullText",
           "name": "Description",
           "type": "html",
           "required": true
         },
-        "date": {
+        {
+          "key": "date",
           "name": "Date",
           "type": "datetime",
           "required": false
         },
-        "userID": {
+        {
+          "key": "userID",
           "name": "User ID",
           "type": "reference",
           "entity": "user",
           "hidden": true
         }
-      },
+      ],
       "methods": [
         {
           "name": "list",
-          "requiresAuth": "true",
+          "requiresAuthentication":true,
           "endpoint": "/todo/list",
           "method": "get",
           "return": {
@@ -202,7 +208,7 @@
               "fields": [
                 {
                   "key":"data",
-                  "type":"entity",
+                  "type":"object",
                   "array": true,
                   "entity": "todo"
                 },
@@ -259,7 +265,7 @@
         },
         {
           "name": "get",
-          "requiresAuth": "true",
+          "requiresAuthentication":true,
           "endpoint": "/todo/:todoID",
           "method": "get",
           "return": {
@@ -273,7 +279,7 @@
         },
         {
           "name": "create",
-          "requiresAuth": "true",
+          "requiresAuthentication":true,
           "endpoint": "/todo/create",
           "method": "post",
           "return": {
@@ -294,7 +300,7 @@
         },
         {
           "name": "update",
-          "requiresAuth": "true",
+          "requiresAuthentication":true,
           "endpoint": "/todo/:todoID/update",
           "method": "post",
           "return": {
@@ -315,10 +321,48 @@
         },
         {
           "name": "delete",
-          "requiresAuth": "true",
+          "requiresAuthentication":true,
           "endpoint": "/todo/:todoID/delete",
           "method": "post",
-          "description": "<p>Updates a todo.</p>"
+          "description": "<p>Deletes a todo.</p>"
+        }
+      ]
+    },
+    "user": {
+      "name": "User",
+      "plural": "Users",
+      "table": "users",
+      "description": "<p>A user is someone who uses the application.</p>",
+      "fields": [
+        {
+          "key" : "id",
+          "name": "ID",
+          "type": "uuid",
+          "required":false
+        },
+        {
+          "key" : "username",
+          "name": "Username",
+          "type": "slug",
+          "required": true
+        },
+        {
+          "key" : "email",
+          "name": "Email",
+          "type": "email",
+          "required": true
+        },
+        {
+          "key" : "firstName",
+          "name": "First Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key" : "lastName",
+          "name": "Last Name",
+          "type": "text",
+          "required": true
         }
       ]
     }
