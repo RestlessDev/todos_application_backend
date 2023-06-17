@@ -112,12 +112,12 @@
                 "required": true
               },
               {
-                "key": "firstName",
+                "key": "first_name",
                 "type": "text",
                 "required": true
               },
               {
-                "key": "lastName",
+                "key": "last_name",
                 "type": "text",
                 "required": true
               }
@@ -176,7 +176,7 @@
           "required": true
         },
         {
-          "key": "fullText",
+          "key": "full_text",
           "name": "Description",
           "type": "html",
           "required": true
@@ -188,7 +188,7 @@
           "required": false
         },
         {
-          "key": "userID",
+          "key": "user_id",
           "name": "User ID",
           "type": "reference",
           "entity": "user",
@@ -353,13 +353,13 @@
           "required": true
         },
         {
-          "key" : "firstName",
+          "key" : "first_name",
           "name": "First Name",
           "type": "text",
           "required": true
         },
         {
-          "key" : "lastName",
+          "key" : "last_name",
           "name": "Last Name",
           "type": "text",
           "required": true

@@ -1,0 +1,173 @@
+{
+  "todos": {
+    "tableIdentifier": {
+      "catalog": "todos",
+      "schema": "public",
+      "table": "todos"
+    },
+    "abbreviation": "t",
+    "uniqueKeys": {
+      "todos_pkey": [
+        "id"
+      ]
+    },
+    "columns": [
+      {
+        "nullable": false,
+        "type": "uuid",
+        "default": "gen_random_uuid()",
+        "name": "id",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "text",
+        "default": null,
+        "name": "title",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "text",
+        "default": "'#0F0'::text",
+        "name": "color",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "uuid",
+        "default": null,
+        "name": "userID",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "timestamp without time zone",
+        "default": "CURRENT_TIMESTAMP",
+        "name": "createDate",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "timestamp without time zone",
+        "default": "CURRENT_TIMESTAMP",
+        "name": "modDate",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "boolean",
+        "default": "true",
+        "name": "activeFlag",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "text",
+        "default": null,
+        "name": "description",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "timestamp without time zone",
+        "default": null,
+        "name": "date",
+        "reference": false
+      }
+    ],
+    "hints": false
+  },
+  "users": {
+    "tableIdentifier": {
+      "catalog": "todos",
+      "schema": "public",
+      "table": "users"
+    },
+    "abbreviation": "u",
+    "uniqueKeys": {
+      "users_pkey": [
+        "id"
+      ],
+      "users_uname_uk": [
+        "username"
+      ],
+      "users_email_uk": [
+        "email"
+      ]
+    },
+    "columns": [
+      {
+        "nullable": false,
+        "type": "uuid",
+        "default": "gen_random_uuid()",
+        "name": "id",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "text",
+        "default": null,
+        "name": "email",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "text",
+        "default": null,
+        "name": "hashed_password",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "timestamp without time zone",
+        "default": "CURRENT_TIMESTAMP",
+        "name": "create_date",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "boolean",
+        "default": "true",
+        "name": "active_flag",
+        "reference": false
+      },
+      {
+        "nullable": true,
+        "type": "text",
+        "default": null,
+        "name": "reset_token",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "text",
+        "default": null,
+        "name": "first_name",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "text",
+        "default": null,
+        "name": "last_name",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "text",
+        "default": null,
+        "name": "username",
+        "reference": false
+      }
+    ],
+    "hints": {
+      "hasMany": [
+        {
+          "table": "todos",
+          "joinedBy": "userID"
+        }
+      ]
+    }
+  }
+}
