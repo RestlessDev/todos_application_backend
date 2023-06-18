@@ -93,7 +93,7 @@
             <h2>Authentication</h2>
             <% if(desc.application.sessionKey) { %>
               <p>This application requires authentication to access some of its functionality.</p>
-              <% if(desc.application.sessionKey.type == "custom-header") { %>
+              <% if(desc.application.sessionKey.type == "erstwhile-custom-header") { %>
               <p>To access endpoints requiring authentication, you should include a custom header with each request: </p>
               <div class="alert alert-secondary pb-1" role="alert">
                 <pre><%- desc.application.sessionKey.header %>: &lt;session-key&gt;</pre>

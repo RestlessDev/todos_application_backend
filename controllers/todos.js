@@ -10,5 +10,6 @@ router.get('/get', function(req, res) {
 
 }); 
 
-
-module.exports = router;
+module.exports = (app) => {
+    app.use('/todos', router);
+};

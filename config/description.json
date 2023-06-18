@@ -3,8 +3,8 @@
     "name": "Todo App",
     "description": "<p>This is a sample application to demostrate the server side of an Erstwhile Framework application.</p><p>Of particular interest is this description, which is used to build the client-side model layer through introspection. If the application is not in production mode (based on the environment variable <code>ENVIRONMENT</code>) you can access the JSON version of this document via <code><a href=\"/describe\">/describe</a></code> and the HTML version via <code><a href=\"/describe?format=html\">/describe?format=html</a></code></p>",
     "sessionKey": {
-      "type": "custom-header",
-      "header": "X-Session"
+      "type": "erstwhile-custom-header",
+      "header": "Erstwhile-Session"
     }
   },
   "authentication": {

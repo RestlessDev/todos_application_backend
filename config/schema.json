@@ -169,5 +169,49 @@
         }
       ]
     }
+  },
+  "erstwhile_sessions": {
+    "tableIdentifier": {
+      "catalog": "todos",
+      "schema": "public",
+      "table": "erstwhile_sessions"
+    },
+    "abbreviation": "es",
+    "uniqueKeys": {
+      "erstwhile_sessions_pkey": [
+        "id"
+      ]
+    },
+    "columns": [
+      {
+        "nullable": false,
+        "type": "uuid",
+        "default": "gen_random_uuid()",
+        "name": "id",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "json",
+        "default": null,
+        "name": "session_data",
+        "reference": false
+      },
+      {
+        "nullable": true,
+        "type": "timestamp without time zone",
+        "default": null,
+        "name": "expires",
+        "reference": false
+      },
+      {
+        "nullable": true,
+        "type": "uuid",
+        "default": null,
+        "name": "user_id",
+        "reference": false
+      }
+    ],
+    "hints": false
   }
 }
