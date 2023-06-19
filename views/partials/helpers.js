@@ -18,6 +18,19 @@ let renderObject = function(input, spaces) {
       retval += newSpaces + `&lt;<a href="#entity-${input.entity}">${input.entity}</a>&gt;\n`
     }
     retval += spaces + "}";
+  } else if(Array.isArray(input)) {
+    retval = "[\n";
+    for(let i = 0; i < input.length; i++) {
+      if(input[i].type == 'object') {
+        retval += newSpaces + input[i].key + ": " + (input[i].array ? '[' : "") + renderObject(input[i], newSpaces) + (input[i].array ? ']' : "") + (i < input.length - 1 ? ',' : "") + `${(input[i].required ? ' // required' : "")}` + "\n";
+      } else if(input[i].type == 'entity') {
+        retval += newSpaces + `${input[i].key}: ${(input[i].array ? '[' : "")}&lt;<a href="#entity-${input.entity}">${input.entity}&gt;</a>${(input[i].array ? ']' : "")}`+ (i < input.length - 1 ? ',' : "") + `${(input[i].required ? ' // required' : "")}` + "\n"    
+      } else {
+        retval += newSpaces + `${input[i].key}: ${(input[i].array ? '[' : "")}&lt;${input[i].type}${(input[i].enum ? `, enum: <a href="#enum-${input[i].enum}">${input[i].enum}</a>` : "")}${(input[i].type == "reference" ? `, entity: <a href="#entity-${input[i].entity}">${input[i].entity}</a>` : "")}&gt;${(input[i].array ? ']' : "")}`+ (i < input.length - 1 ? ',' : "")  + `${(input[i].required ? ' // required' : "")}` + "\n"    
+      }
+    }
+    
+    retval += spaces + "]";
   }
   return retval;
 };

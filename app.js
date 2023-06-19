@@ -12,7 +12,7 @@ require('dotenv').config()
 
 const orm = new RestlessORM({
   camelCaps: false,
-  debug: true,
+  debug: false,
   softDeleteColumn: "active_flag"
 })
 

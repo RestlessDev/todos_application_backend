@@ -10,7 +10,8 @@
   <%- helpers.renderObject(endpoint.fields.payload, '  ') %></pre>
   <% } else if(endpoint.fields.type == "query") { %>
   <p><strong>Query Parameters</strong></p>
-    
+  <pre>
+  <%- helpers.renderObject(endpoint.fields.fields, '  ') %></pre>
   <% } %>
 <% } %>
 <% if(endpoint.return) { %> 

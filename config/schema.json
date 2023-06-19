@@ -1,83 +1,4 @@
 {
-  "todos": {
-    "tableIdentifier": {
-      "catalog": "todos",
-      "schema": "public",
-      "table": "todos"
-    },
-    "abbreviation": "t",
-    "uniqueKeys": {
-      "todos_pkey": [
-        "id"
-      ]
-    },
-    "columns": [
-      {
-        "nullable": false,
-        "type": "uuid",
-        "default": "gen_random_uuid()",
-        "name": "id",
-        "reference": false
-      },
-      {
-        "nullable": false,
-        "type": "text",
-        "default": null,
-        "name": "title",
-        "reference": false
-      },
-      {
-        "nullable": false,
-        "type": "text",
-        "default": "'#0F0'::text",
-        "name": "color",
-        "reference": false
-      },
-      {
-        "nullable": false,
-        "type": "uuid",
-        "default": null,
-        "name": "userID",
-        "reference": false
-      },
-      {
-        "nullable": false,
-        "type": "timestamp without time zone",
-        "default": "CURRENT_TIMESTAMP",
-        "name": "createDate",
-        "reference": false
-      },
-      {
-        "nullable": false,
-        "type": "timestamp without time zone",
-        "default": "CURRENT_TIMESTAMP",
-        "name": "modDate",
-        "reference": false
-      },
-      {
-        "nullable": false,
-        "type": "boolean",
-        "default": "true",
-        "name": "activeFlag",
-        "reference": false
-      },
-      {
-        "nullable": false,
-        "type": "text",
-        "default": null,
-        "name": "description",
-        "reference": false
-      },
-      {
-        "nullable": false,
-        "type": "timestamp without time zone",
-        "default": null,
-        "name": "date",
-        "reference": false
-      }
-    ],
-    "hints": false
-  },
   "users": {
     "tableIdentifier": {
       "catalog": "todos",
@@ -169,6 +90,92 @@
         }
       ]
     }
+  },
+  "todos": {
+    "tableIdentifier": {
+      "catalog": "todos",
+      "schema": "public",
+      "table": "todos"
+    },
+    "abbreviation": "t",
+    "uniqueKeys": {
+      "todos_pkey": [
+        "id"
+      ]
+    },
+    "columns": [
+      {
+        "nullable": false,
+        "type": "uuid",
+        "default": "gen_random_uuid()",
+        "name": "id",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "text",
+        "default": null,
+        "name": "title",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "text",
+        "default": "'#0F0'::text",
+        "name": "color",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "uuid",
+        "default": null,
+        "name": "user_id",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "timestamp without time zone",
+        "default": "CURRENT_TIMESTAMP",
+        "name": "create_date",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "timestamp without time zone",
+        "default": "CURRENT_TIMESTAMP",
+        "name": "mod_date",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "boolean",
+        "default": "true",
+        "name": "active_flag",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "text",
+        "default": null,
+        "name": "description",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "timestamp without time zone",
+        "default": null,
+        "name": "date",
+        "reference": false
+      },
+      {
+        "nullable": false,
+        "type": "boolean",
+        "default": "false",
+        "name": "done_flag",
+        "reference": false
+      }
+    ],
+    "hints": false
   },
   "erstwhile_sessions": {
     "tableIdentifier": {

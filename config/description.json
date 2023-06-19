@@ -176,7 +176,7 @@
           "required": true
         },
         {
-          "key": "full_text",
+          "key": "description",
           "name": "Description",
           "type": "html",
           "required": true
@@ -186,6 +186,12 @@
           "name": "Date",
           "type": "datetime",
           "required": false
+        },
+        {
+          "key": "done_flag",
+          "name": "Done?",
+          "type": "boolean",
+          "required": true
         },
         {
           "key": "user_id",
@@ -234,7 +240,7 @@
                 "default": 1
               },
               {
-                "key": "numPerPage",
+                "key": "num_per_page",
                 "type": "integer",
                 "required": false,
                 "default": 20
@@ -251,7 +257,7 @@
                 "default": "date"
               },
               {
-                "key": "sortOrder",
+                "key": "sort_order",
                 "type": "string",
                 "enum": [
                   "asc",
@@ -259,6 +265,12 @@
                 ],
                 "required": false,
                 "default": "asc"
+              },
+              {
+                "key": "show_completed",
+                "type": "boolean",
+                "required": false,
+                "default": "false"
               }
             ]
           }
