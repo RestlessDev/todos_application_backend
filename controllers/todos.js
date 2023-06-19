@@ -5,7 +5,6 @@ const router  = express.Router();
 
 router.get('/list', sessionMiddleware, async function(req, res) {
   let validRequest = validateRequest(req);
-  console.log(validRequest)
   if(validRequest.success && validRequest.authenticated) {
     let page = req.query.page || 1;
     page = parseInt(page);
@@ -22,7 +21,7 @@ router.get('/list', sessionMiddleware, async function(req, res) {
     let showCompleted = req.query.show_completed ? req.query.show_completed == 'true' : false;
 
     let todos = await req.orm.rawSQL(`
-      SELECT t.id, t.title, t.color, t.date, t.description,
+      SELECT t.id, t.title, t.color, t.date, t.description, t.done_flag, t.create_date, t.mod_date,
           count(t.*) OVER() AS total_count
       FROM todos t
       WHERE t.active_flag = true AND t.user_id = $1 ${(!showCompleted ? `AND done_flag = false` : '')}
@@ -30,7 +29,7 @@ router.get('/list', sessionMiddleware, async function(req, res) {
       `, [req.session.user_id])
     if(todos.length > 0) {
       let totalCount = todos[0].total_count;
-      for(let i = 0; i < todos.length; todos++) {
+      for(let i = 0; i < todos.length; i++) {
         delete todos[i].total_count;
       }
       res.json({
@@ -56,9 +55,152 @@ router.get('/list', sessionMiddleware, async function(req, res) {
   }
 }); 
 
-router.get('/get', sessionMiddleware, async function(req, res) {
-
+router.get('/:id', sessionMiddleware, async function(req, res) {
+  let validRequest = validateRequest(req);
+  if(validRequest.success && validRequest.authenticated) {
+    if(req.params.id) {
+      let todo = await req.orm.rawSQL(`
+        SELECT t.id, t.title, t.color, t.date, t.description, t.done_flag, t.create_date, t.mod_date
+          FROM todos t
+          WHERE t.id = $1 AND t.user_id = $2 AND t.active_flag = true
+      `, [req.params.id, req.session.user_id]);
+      if(todo.length > 0) {
+        res.send(todo[0]); 
+      } else {
+        res.send({
+          success:false, 
+          authenticated: validRequest.authenticated,
+          errors: [
+            "The ID is invalid, or does not belong to this user."
+          ]
+        })  
+      }
+    } else {
+      res.send({
+        success:false, 
+        authenticated: validRequest.authenticated,
+        errors: [
+          "No ID specified."
+        ]
+      })
+    }
+  } else {
+    res.send(validRequest)
+  }
 }); 
+
+router.post('/create', sessionMiddleware, async function(req, res) {
+  let validRequest = validateRequest(req);
+  if(validRequest.success && validRequest.authenticated) {
+    let todoID = await req.orm.insert("todos", {
+      data: {
+        title: req.body.title,
+        description: req.body.description,
+        color: req.body.color,
+        done_flag: req.body.done_flag || false,
+        user_id: req.session.user_id,
+        date: new Date(req.body.date)
+      }
+    })
+    let todo = await req.orm.findUnique("todos", {where: {id: todoID}});
+    delete todo.user_id;
+    delete todo.active_flag;
+    res.send(todo)
+  } else {
+    res.send(validRequest)
+  }
+})
+
+router.post('/:id/update', sessionMiddleware, async function(req, res) {
+  let validRequest = validateRequest(req);
+  if(validRequest.success && validRequest.authenticated) {
+    if(req.params.id)  {
+      let todos = await req.orm.rawSQL(`
+        SELECT * FROM todos WHERE id = $1 AND user_id = $2 AND active_flag = true
+      `, [req.params.id, req.session.user_id])
+
+      if(todos.length > 0) {
+        let newTodo = {
+          title: req.body.title,
+          description: req.body.description,
+          color: req.body.color,
+          done_flag: req.body.done_flag,
+          date: new Date(req.body.date),
+          mod_date: new Date()
+        };
+        let todoID = await req.orm.update("todos", {
+          where: {
+            id: req.params.id
+          },
+          data: newTodo
+        })
+        let todo = {...todos[0], ...newTodo}
+        delete todo.user_id;
+        delete todo.active_flag;
+        res.send(todo)
+      } else {
+        res.send({
+          success:false, 
+          authenticated: validRequest.authenticated,
+          errors: [
+            "The ID is invalid, or does not belong to this user."
+          ]
+        })
+      }
+    } else {
+      res.send({
+        success:false, 
+        authenticated: validRequest.authenticated,
+        errors: [
+          "No ID specified."
+        ]
+      })
+    }
+  } else {
+    res.send(validRequest)
+  }
+})
+
+router.post('/:id/delete', sessionMiddleware, async function(req, res) {
+  let validRequest = validateRequest(req);
+  if(validRequest.success && validRequest.authenticated) {
+    if(req.params.id)  {
+      let todos = await req.orm.rawSQL(`
+        SELECT * FROM todos WHERE id = $1 AND user_id = $2 AND active_flag = true
+      `, [req.params.id, req.session.user_id])
+
+      if(todos.length > 0) {
+        let todoID = await req.orm.delete("todos", {
+          where: {
+            id: req.params.id
+          }
+        })
+        res.send({
+          success:true, 
+          authenticated: validRequest.authenticated,  
+        })
+      } else {
+        res.send({
+          success:false, 
+          authenticated: validRequest.authenticated,
+          errors: [
+            "The ID is invalid, or does not belong to this user."
+          ]
+        })
+      }
+    } else {
+      res.send({
+        success:false, 
+        authenticated: validRequest.authenticated,
+        errors: [
+          "No ID specified."
+        ]
+      })
+    }
+  } else {
+    res.send(validRequest)
+  }
+})
 
 module.exports = (app) => {
     app.use('/todo', router);

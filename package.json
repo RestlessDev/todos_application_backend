@@ -18,7 +18,8 @@
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "glob": "^10.2.7",
-    "restlesspgorm": "^0.9.24",
+    "path": "^0.12.7",
+    "restlesspgorm": "^0.9.25",
     "validator": "^13.9.0"
   },
   "devDependencies": {
