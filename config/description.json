@@ -1,4 +1,5 @@
 {
+  "version":0.5,
   "application": {
     "name": "Todo App",
     "description": "<p>This is a sample application to demostrate the server side of an Erstwhile Framework application.</p><p>Of particular interest is this description, which is used to build the client-side model layer through introspection. If the application is not in production mode (based on the environment variable <code>ENVIRONMENT</code>) you can access the JSON version of this document via <code><a href=\"/describe\">/describe</a></code> and the HTML version via <code><a href=\"/describe?format=html\">/describe?format=html</a></code></p>",
@@ -14,6 +15,7 @@
         "endpoint": "/authentication/login",
         "method": "post",
         "type": "username-password",
+        "key":"login",
         "return": {
           "type": "json",
           "payload": {
@@ -73,7 +75,7 @@
     },
     "currentUser": {
       "name": "current",
-      "endpoint": "/user/current",
+      "endpoint": "/authentication/currentUser",
       "method": "get",
       "requiresAuthentication": true,
       "description": "<p>This returns the user object for the currently logged in user.</p>",
@@ -89,6 +91,7 @@
       {
         "name": "signup",
         "endpoint": "/authentication/signup",
+        "key": "signup",
         "method": "post",
         "description": "<p>A standard signup form.</p>",
         "fields": {
@@ -204,6 +207,7 @@
       "methods": [
         {
           "name": "list",
+          "key": "list",
           "requiresAuthentication":true,
           "endpoint": "/todo/list",
           "method": "get",
@@ -277,6 +281,7 @@
         },
         {
           "name": "get",
+          "key": "get",
           "requiresAuthentication":true,
           "endpoint": "/todo/:todoID",
           "method": "get",
@@ -291,6 +296,7 @@
         },
         {
           "name": "create",
+          "key": "create",
           "requiresAuthentication":true,
           "endpoint": "/todo/create",
           "method": "post",
@@ -312,6 +318,7 @@
         },
         {
           "name": "update",
+          "key": "update",
           "requiresAuthentication":true,
           "endpoint": "/todo/:todoID/update",
           "method": "post",
@@ -333,6 +340,7 @@
         },
         {
           "name": "delete",
+          "key": "delete",
           "requiresAuthentication":true,
           "endpoint": "/todo/:todoID/delete",
           "method": "post",
