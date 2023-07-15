@@ -120,14 +120,21 @@ router.post('/:id/update', sessionMiddleware, async function(req, res) {
       `, [req.params.id, req.session.user_id])
 
       if(todos.length > 0) {
-        let newTodo = {
-          title: req.body.title,
-          description: req.body.description,
-          color: req.body.color,
-          done_flag: req.body.done_flag,
-          date: new Date(req.body.date),
-          mod_date: new Date()
-        };
+        let newTodo = { mod_date: new Date() };
+        for(let key in req.body) {
+          switch(key) {
+            case "description":
+            case "title":
+            case "color":
+            case "done_flag":
+            case "completion_notes":
+              newTodo[key] = req.body[key];
+              break;
+            case "date": 
+              newTodo[key] = new Date(req.body.date);
+              break;
+          }
+        }
         let todoID = await req.orm.update("todos", {
           where: {
             id: req.params.id

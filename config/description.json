@@ -181,7 +181,7 @@
         {
           "key": "description",
           "name": "Description",
-          "type": "html",
+          "type": "text",
           "required": true
         },
         {
@@ -194,6 +194,12 @@
           "key": "done_flag",
           "name": "Done?",
           "type": "boolean",
+          "required": true
+        },
+        {
+          "key": "completion_notes",
+          "name": "Completion Notes",
+          "type": "text",
           "required": true
         },
         {

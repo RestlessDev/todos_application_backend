@@ -173,6 +173,13 @@
         "default": "false",
         "name": "done_flag",
         "reference": false
+      },
+      {
+        "nullable": true,
+        "type": "text",
+        "default": null,
+        "name": "completion_notes",
+        "reference": false
       }
     ],
     "hints": false
