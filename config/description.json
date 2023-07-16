@@ -188,19 +188,20 @@
           "key": "date",
           "name": "Date",
           "type": "datetime",
-          "required": false
+          "required": true
         },
         {
           "key": "done_flag",
           "name": "Done?",
           "type": "boolean",
-          "required": true
+          "required": true, 
+          "default": false
         },
         {
           "key": "completion_notes",
           "name": "Completion Notes",
           "type": "text",
-          "required": true
+          "required": false
         },
         {
           "key": "user_id",

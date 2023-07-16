@@ -92,15 +92,25 @@ router.get('/:id', sessionMiddleware, async function(req, res) {
 router.post('/create', sessionMiddleware, async function(req, res) {
   let validRequest = validateRequest(req);
   if(validRequest.success && validRequest.authenticated) {
-    let todoID = await req.orm.insert("todos", {
-      data: {
-        title: req.body.title,
-        description: req.body.description,
-        color: req.body.color,
-        done_flag: req.body.done_flag || false,
-        user_id: req.session.user_id,
-        date: new Date(req.body.date)
+    let newTodo = { done_flag: false, user_id: req.session.user_id };
+    for(let key in req.body) {
+      if(req.body[key].trim() != '') {
+        switch(key) {
+          case "description":
+          case "title":
+          case "color":
+          case "done_flag":
+          case "completion_notes":
+            newTodo[key] = req.body[key];
+            break;
+          case "date": 
+            newTodo[key] = new Date(req.body.date);
+            break;
+        }
       }
+    }
+    let todoID = await req.orm.insert("todos", {
+      data: newTodo
     })
     let todo = await req.orm.findUnique("todos", {where: {id: todoID}});
     delete todo.user_id;
