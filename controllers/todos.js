@@ -6,27 +6,47 @@ const router  = express.Router();
 router.get('/list', sessionMiddleware, async function(req, res) {
   let validRequest = validateRequest(req);
   if(validRequest.success && validRequest.authenticated) {
-    let page = req.query.page || 1;
-    page = parseInt(page);
+    // console.log(req.query)
+    let start = req.query.start || 0;
+    start = parseInt(start);
 
-    let numPerPage = req.query.num_per_page || 10;
+    let numPerPage = req.query.length || 10;
     numPerPage = parseInt(numPerPage);
 
-    let sortOptions = ['date', 'title', 'color'];
-    let sort = req.query.sort ? (sortOptions.indexOf(req.query.sort) >= 0 ? req.query.sort : 'date') : 'date';
+    let showCompleted = '';
+    switch(req.query.status) {
+      case "not-complete":
+        showCompleted = `AND done_flag = false `;
+        break;
+      case "complete":
+        showCompleted = `AND done_flag = true `;
+        break;
+    }
+
+    let params = [req.session.user_id];
+    let search = '';
+    if(req.query.search) {
+      search = ` AND (title ILIKE '%' || $2 || '%' OR description ILIKE '%' || $2 || '%' OR completion_notes ILIKE '%' || $2 || '%')`;
+      params.push(req.query.search)
+      
+    }
+
+    let columns = req.query.columns;
+    let sortOptions = ['date', 'title', 'color', 'done_flag'];
+    let sort = req.query.order ? (sortOptions.indexOf(columns[req.query.order[0]['column']].data) >= 0 ? columns[req.query.order[0]['column']].data : 'date') : 'date';
 
     let sortOrders = ['asc', 'desc'];
-    let sortOrder = req.query.sort_order ? (sortOrders.indexOf(req.query.sort_order) >= 0 ? req.query.sort_order : 'asc') : 'asc';
+    let sortOrder = req.query.order ? (sortOrders.indexOf(req.query.order[0]['dir']) >= 0 ? req.query.order[0]['dir'] : 'asc') : 'asc';
 
-    let showCompleted = req.query.show_completed ? req.query.show_completed == 'true' : false;
+    let sql = `
+    SELECT t.id, t.title, t.color, t.date, t.description, t.done_flag, t.create_date, t.mod_date,
+        count(t.*) OVER() AS total_count
+    FROM todos t
+    WHERE t.active_flag = true AND t.user_id = $1 ${showCompleted} ${search}
+    ORDER BY ${sort} ${sortOrder} OFFSET ${start} LIMIT ${(numPerPage || 10)}
+    `;
+    let todos = await req.orm.rawSQL(sql, params)
 
-    let todos = await req.orm.rawSQL(`
-      SELECT t.id, t.title, t.color, t.date, t.description, t.done_flag, t.create_date, t.mod_date,
-          count(t.*) OVER() AS total_count
-      FROM todos t
-      WHERE t.active_flag = true AND t.user_id = $1 ${(!showCompleted ? `AND done_flag = false` : '')}
-      ORDER BY ${sort} ${sortOrder} OFFSET ${((page - 1) * (numPerPage || 10))} LIMIT ${(numPerPage || 10)}
-      `, [req.session.user_id])
     if(todos.length > 0) {
       let totalCount = todos[0].total_count;
       for(let i = 0; i < todos.length; i++) {
@@ -34,14 +54,16 @@ router.get('/list', sessionMiddleware, async function(req, res) {
       }
       res.json({
         data: todos,
-        page: page,
-        total: Math.ceil(totalCount / numPerPage)
+        draw: req.query.draw || 1,
+        recordsFiltered: totalCount,
+        recordsTotal: totalCount
       })
     } else {
       res.json({
+        draw: 1,
         data: [],
-        page: 0,
-        total: 0
+        recordsFiltered: 0,
+        recordsTotal: 0
       })  
     }
   } else {
