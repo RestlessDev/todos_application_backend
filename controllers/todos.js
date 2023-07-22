@@ -39,7 +39,7 @@ router.get('/list', sessionMiddleware, async function(req, res) {
     let sortOrder = req.query.order ? (sortOrders.indexOf(req.query.order[0]['dir']) >= 0 ? req.query.order[0]['dir'] : 'asc') : 'asc';
 
     let sql = `
-    SELECT t.id, t.title, t.color, t.date, t.description, t.done_flag, t.create_date, t.mod_date,
+    SELECT t.id, t.title, t.color, t.date, t.description, t.done_flag, t.create_date, t.mod_date, t.completion_notes,
         count(t.*) OVER() AS total_count
     FROM todos t
     WHERE t.active_flag = true AND t.user_id = $1 ${showCompleted} ${search}
@@ -77,12 +77,48 @@ router.get('/list', sessionMiddleware, async function(req, res) {
   }
 }); 
 
+router.get('/calendar', sessionMiddleware, async function(req, res) {
+  let validRequest = validateRequest(req);
+  if(validRequest.success && validRequest.authenticated) {
+    // console.log(req.query)
+    let today = new Date();
+
+    let month = req.query.month || (today.getMonth() + 1);
+    month = parseInt(month);
+
+    let year = req.query.year || today.getFullYear();
+    year = parseInt(year);
+
+    let startDate = `${year}-${month}-1 00:00:00`;
+
+    let endDate = `${year}-${(month + 1)}-1 00:00:00`;
+
+    let sql = `
+    SELECT t.id, t.title, t.color, t.date, t.description, t.done_flag, t.create_date, t.mod_date, t.completion_notes
+    FROM todos t
+    WHERE t.active_flag = true AND t.user_id = $1 AND t.date >= '${startDate}' AND t.date < '${endDate}'
+    ORDER BY t.date ASC 
+    `;
+    let todos = await req.orm.rawSQL(sql)
+
+    res.send({todos: todos})    
+  } else {
+    res.send({
+      success:false, 
+      authenticated: false,
+      errors: [
+        "User not logged in."
+      ]
+    })
+  }
+}); 
+
 router.get('/:id', sessionMiddleware, async function(req, res) {
   let validRequest = validateRequest(req);
   if(validRequest.success && validRequest.authenticated) {
     if(req.params.id) {
       let todo = await req.orm.rawSQL(`
-        SELECT t.id, t.title, t.color, t.date, t.description, t.done_flag, t.create_date, t.mod_date
+        SELECT t.id, t.title, t.color, t.date, t.description, t.done_flag, t.create_date, t.mod_date, t.completion_notes
           FROM todos t
           WHERE t.id = $1 AND t.user_id = $2 AND t.active_flag = true
       `, [req.params.id, req.session.user_id]);
@@ -144,15 +180,16 @@ router.post('/create', sessionMiddleware, async function(req, res) {
 })
 
 router.post('/:id/update', sessionMiddleware, async function(req, res) {
-  let validRequest = validateRequest(req);
-  if(validRequest.success && validRequest.authenticated) {
-    if(req.params.id)  {
-      let todos = await req.orm.rawSQL(`
-        SELECT * FROM todos WHERE id = $1 AND user_id = $2 AND active_flag = true
-      `, [req.params.id, req.session.user_id])
+  if(req.params.id)  {
+    let todos = await req.orm.rawSQL(`
+      SELECT * FROM todos WHERE id = $1 AND user_id = $2 AND active_flag = true
+    `, [req.params.id, req.session.user_id])
 
-      if(todos.length > 0) {
-        let newTodo = { mod_date: new Date() };
+    if(todos.length > 0) {
+      let newTodo = {...todos[0], ...{ mod_date: new Date() }};
+      
+      let validRequest = validateRequest(req, newTodo);
+      if(validRequest.success && validRequest.authenticated) {
         for(let key in req.body) {
           switch(key) {
             case "description":
@@ -178,26 +215,27 @@ router.post('/:id/update', sessionMiddleware, async function(req, res) {
         delete todo.active_flag;
         res.send(todo)
       } else {
-        res.send({
-          success:false, 
-          authenticated: validRequest.authenticated,
-          errors: [
-            "The ID is invalid, or does not belong to this user."
-          ]
-        })
+        res.send(validRequest)
       }
     } else {
       res.send({
         success:false, 
         authenticated: validRequest.authenticated,
         errors: [
-          "No ID specified."
+          "The ID is invalid, or does not belong to this user."
         ]
       })
     }
   } else {
-    res.send(validRequest)
-  }
+    res.send({
+      success:false, 
+      authenticated: validRequest.authenticated,
+      errors: [
+        "No ID specified."
+      ]
+    })
+    }
+
 })
 
 router.post('/:id/delete', sessionMiddleware, async function(req, res) {

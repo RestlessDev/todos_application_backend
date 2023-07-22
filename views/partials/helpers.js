@@ -8,6 +8,8 @@ let renderObject = function(input, spaces) {
       for(let i = 0; i < input.fields.length; i++) {
         if(input.fields[i].type == 'object') {
           retval += newSpaces + input.fields[i].key + ": " + (input.fields[i].array ? '[' : "") + renderObject(input.fields[i], newSpaces) + (input.fields[i].array ? ']' : "") + (i < input.fields.length - 1 ? ',' : "") + `${(input.fields[i].required ? ' // required' : "")}` + "\n";
+        } else if(input.fields[i].type == 'external-reference') {
+          retval += newSpaces + `${input.fields[i].key}: <a href="${input.fields[i].link}" target="_blank">${input.fields[i].title}</a>` + "\n"    
         } else if(input.fields[i].type == 'entity') {
           retval += newSpaces + `${input.fields[i].key}: ${(input.fields[i].array ? '[' : "")}&lt;<a href="#entity-${input.entity}">${input.entity}&gt;</a>${(input.fields[i].array ? ']' : "")}`+ (i < input.fields.length - 1 ? ',' : "") + `${(input.fields[i].required ? ' // required' : "")}` + "\n"    
         } else {
@@ -25,6 +27,8 @@ let renderObject = function(input, spaces) {
         retval += newSpaces + input[i].key + ": " + (input[i].array ? '[' : "") + renderObject(input[i], newSpaces) + (input[i].array ? ']' : "") + (i < input.length - 1 ? ',' : "") + `${(input[i].required ? ' // required' : "")}` + "\n";
       } else if(input[i].type == 'entity') {
         retval += newSpaces + `${input[i].key}: ${(input[i].array ? '[' : "")}&lt;<a href="#entity-${input.entity}">${input.entity}&gt;</a>${(input[i].array ? ']' : "")}`+ (i < input.length - 1 ? ',' : "") + `${(input[i].required ? ' // required' : "")}` + "\n"    
+      } else if(input[i].type == 'external-reference') {
+        retval += newSpaces + `${input[i].key}: <a href="${input[i].link}" target="_blank">${input[i].title}</a>` + "\n"    
       } else {
         retval += newSpaces + `${input[i].key}: ${(input[i].array ? '[' : "")}&lt;${input[i].type}${(input[i].enum ? `, enum: <a href="#enum-${input[i].enum}">${input[i].enum}</a>` : "")}${(input[i].type == "reference" ? `, entity: <a href="#entity-${input[i].entity}">${input[i].entity}</a>` : "")}&gt;${(input[i].array ? ']' : "")}`+ (i < input.length - 1 ? ',' : "")  + `${(input[i].required ? ' // required' : "")}` + "\n"    
       }

@@ -224,64 +224,75 @@
               "type": "object",
               "fields": [
                 {
-                  "key":"data",
-                  "type":"object",
-                  "array": true,
-                  "entity": "todo"
-                },
-                {
-                  "key": "page",
-                  "type": "integer"
-                },
-                {
-                  "key": "total",
-                  "type": "integer"
+                  "type":"external-reference",
+                  "link": "https://datatables.net/manual/server-side",
+                  "key": "datatable-response",
+                  "title": "Datatables Server Side Documentation"
                 }
               ]
             }
           },
-          "description": "<p>Returns a list of todos for the requesting user. The data is paginated with a default of 10 items per page.</p>",
+          "description": "<p>Returns a list of todos for the requesting user. The format and response are both determined by the Datatables library, with additional fields passed for the search and status filters.</p>",
           "fields": {
             "type": "query",
             "fields": [
               {
-                "key": "page",
-                "type": "integer",
-                "required": false,
-                "default": 1
+                "type":"external-reference",
+                "link": "https://datatables.net/manual/server-side",
+                "key": "datatable-request",
+                "title": "Datatables Server Side Documentation"
               },
               {
-                "key": "num_per_page",
-                "type": "integer",
-                "required": false,
-                "default": 20
+                "key": "search",
+                "type": "string",
+                "required": false
               },
               {
-                "key": "sort",
+                "key": "status",
                 "type": "string",
                 "enum": [
-                  "date",
-                  "title",
-                  "color"
+                  "all-todos",
+                  "complete",
+                  "not-complete"
                 ],
-                "required": false,
-                "default": "date"
+                "required": false
+              }
+            ]
+          }
+        },
+        {
+          "name": "calendar",
+          "key": "calendar",
+          "requiresAuthentication":true,
+          "endpoint": "/todo/calendar",
+          "method": "get",
+          "return": {
+            "type": "json",
+            "payload": {
+              "type": "object",
+              "fields": [
+                {
+                  "type":"object",
+                  "entity": "todo",
+                  "array" : true, 
+                  "key" : "todos"
+                }
+              ]
+            }
+          },
+          "description": "<p>Returns a list of todos for the month and year specified.</p>",
+          "fields": {
+            "type": "query",
+            "fields": [
+              {
+                "key": "month",
+                "type": "integer",
+                "required": false
               },
               {
-                "key": "sort_order",
-                "type": "string",
-                "enum": [
-                  "asc",
-                  "desc"
-                ],
-                "required": false,
-                "default": "asc"
-              },
-              {
-                "key": "show_completed",
-                "type": "boolean",
-                "required": false,
-                "default": "false"
+                "key": "year",
+                "type": "integer",
+                "required": false
               }
             ]
           }
