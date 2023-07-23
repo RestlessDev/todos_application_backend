@@ -99,7 +99,7 @@ router.get('/calendar', sessionMiddleware, async function(req, res) {
     WHERE t.active_flag = true AND t.user_id = $1 AND t.date >= '${startDate}' AND t.date < '${endDate}'
     ORDER BY t.date ASC 
     `;
-    let todos = await req.orm.rawSQL(sql)
+    let todos = await req.orm.rawSQL(sql, [req.session.user_id])
 
     res.send({todos: todos})    
   } else {
