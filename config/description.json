@@ -87,6 +87,13 @@
         }
       }
     },
+    "logout": {
+      "name": "logout",
+      "endpoint": "/authentication/logout",
+      "method": "get",
+      "requiresAuthentication": false,
+      "description": "<p>This kills the user's session if it's active.</p>"
+    },
     "signup": [
       {
         "name": "signup",

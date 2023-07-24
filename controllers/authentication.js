@@ -137,6 +137,17 @@ router.get('/currentUser', sessionMiddleware, async function(req, res) {
   } 
 }); 
 
+router.get('/logout', sessionMiddleware, async function(req, res) {
+  if(req.session?.user_id) {
+    await req.orm.delete("erstwhile_sessions", {where: {id: req.get("Erstwhile-Session")}});
+    req['session'] = {};
+  } 
+  res.send({
+    success: true, 
+    authenticated: false
+  })
+}); 
+
 module.exports = (app) => {
   app.use('/authentication', router);
 };

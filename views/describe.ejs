@@ -124,12 +124,18 @@
                 <%- include('partials/endpoint', {endpoint}) %>
               
             <% } %>
-            <% if(desc.authentication.currentUser) { %>
-              <h3>Current User Endpoint</h3>
-              <% let endpoint = desc.authentication.currentUser;
+            <% if(desc.authentication.logout) { %>
+              <h3>Logout Endpoint</h3>
+              <% let endpoint = desc.authentication.logout;
                 %>
                 <%- include('partials/endpoint', {endpoint}) %>
-              
+                <% if(desc.authentication.currentUser) { %>
+                  <h3>Current User Endpoint</h3>
+                  <% let endpoint = desc.authentication.currentUser;
+                    %>
+                    <%- include('partials/endpoint', {endpoint}) %>
+                  
+                <% } %>
             <% } %>
           </div>
         </div>
