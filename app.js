@@ -1,12 +1,11 @@
 const express = require('express');
 const glob = require('glob');
 
-const ejs = require('ejs');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const compress = require('compression');
 const RestlessORM = require('restlesspgorm');
-const {sessionCleanup} = require("./lib/erstwhile")
+const {sessionCleanup, handleDescribe} = require("erstwhile-backend");
 
 require('dotenv').config()
 
@@ -33,25 +32,13 @@ app.use(compress());
 
 app.use(sessionCleanup);
 
-// set the view engine to ejs
-app.set('view engine', 'ejs');
-// static files
-app.use(express.static('public'));
-
 app.use(function(req, res, next) {
   req.orm = orm;
   next();
 })
 
 if(process.env.ENVIRONMENT != 'production') {
-  app.get('/describe', (req, res) => {
-    if(req.query.format && req.query.format == 'html') {
-      var helpers = require('./views/partials/helpers.js');
-      res.render('describe', {desc: apiDescription, helpers})
-    } else {
-      res.json(apiDescription);
-    }
-  })    
+  app.get('/describe', handleDescribe)    
 } 
 
 var controllers = glob.sync('./controllers/*.js');

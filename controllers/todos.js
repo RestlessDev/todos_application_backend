@@ -1,5 +1,5 @@
 const express = require('express'); //import express
-const { validateRequest, sessionMiddleware } = require("../lib/erstwhile");
+const { validateRequest, sessionMiddleware } = require("erstwhile-backend");
 
 const router  = express.Router(); 
 
