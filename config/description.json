@@ -137,10 +137,11 @@
       }
     ]
   },
-  "enums": {
-    "colorCodes": {
+  "enums": [
+    {
       "name": "Color Codes",
       "description":"<p>These are the default colors to choose from when creating todos.</p>",
+      "id":"colorCodes",
       "options": [
         {
           "text": "Red",
@@ -156,9 +157,10 @@
         }
       ]
     }
-  },
-  "entities": {
-    "todo": {
+  ],
+  "entities": [
+    {
+      "id":"todo",
       "name": "Todo",
       "plural": "Todos",
       "table": "todos",
@@ -373,7 +375,8 @@
         }
       ]
     },
-    "user": {
+    {
+      "id":"user",
       "name": "User",
       "plural": "Users",
       "table": "users",
@@ -411,5 +414,5 @@
         }
       ]
     }
-  }
+  ]
 }

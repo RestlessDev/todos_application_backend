@@ -16,7 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
-    "erstwhile-backend": "^0.1.7",
+    "erstwhile-backend": "^0.1.8",
     "express": "^4.18.2",
     "glob": "^10.3.3",
     "path": "^0.12.7",
